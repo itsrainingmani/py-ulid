@@ -49,13 +49,13 @@ Below is the current specification of ULID as implemented in this repository.
 
 ### Components
 
-**Timestamp**
+#### Timestamp
 
 - 48 bit integer
 - UNIX-time in milliseconds
 - Won't run out of space till the year 10889 AD.
 
-**Randomness**
+#### Randomness
 
 - 80 bits
 - Cryptographically secure source of randomness, if possible
