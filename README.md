@@ -37,8 +37,6 @@ ulid() // 01ARZ3NDEKTSV4RRFFQ69G5FAV
 
 Below is the current specification of ULID as implemented in this repository.
 
-*Note: the binary format has not been implemented in JavaScript as of yet.*
-
 ```text
  01AN4Z07BY      79KA1307SR9X4MV3
 
