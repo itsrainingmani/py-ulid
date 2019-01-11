@@ -37,8 +37,10 @@ def generate():
 
 
 def encode(bits):
-    if len(bits) != 128:
+    if len(bits) != 130:
         raise ValueError("The argument has to be 128 bits in length")
+    if bits[0:2] != "0b" or not isinstance(bits, str):
+        raise TypeError("Argument has to be a bit string")
     ulid_str = ""
     for i in range(0, len(bits), 5):
         ulid_str += CROCKFORDS_BASE32[int(bits[i : i + 5], base=2)]
@@ -51,4 +53,4 @@ if __name__ == "__main__":
 
     import random
 
-    print(encode(bin(random.getrandbits(127))[2:]))
+    print(encode(bin(random.getrandbits(128))))
