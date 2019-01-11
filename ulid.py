@@ -16,25 +16,18 @@ def generate():
     import time
 
     epoch_bits = format(int(time.time() * 1000), f"0{TIMESTAMP}b")
-    # logging.info(len(epoch_bits))
     # logging.info(f"EPOCH BITS  {epoch_bits}")
+
     rand_num_bits = ""
+    try:
+        rand_bytes = os.urandom(RANDOMNESS // 8)
+    except NotImplementedError:
+        raise NotImplementedError(
+            "The /dev/urandom device is not available or readable"
+        )
 
     # Get the randomness bits
-    if sys.version_info > (3, 6, 0):
-        logging.info("Can use the secrets module for generation")
-        import secrets
-
-        # secrets.randbits returns the random bits in the form of an int
-        rand_num_bits = bin(secrets.randbits(80))[2:]
-        # logging.info(f"RANDOM BITS {rand_num_bits}")
-    else:
-        logging.info("Use the os urandom method for generation")
-
-        rand_num_bits = bin(
-            int.from_bytes(os.urandom(RANDOMNESS / 8), byteorder="big")
-        )[2:]
-        # logging.info(f"RANDOM BITS {rand_num_bits}")
+    rand_num_bits = bin(int.from_bytes(rand_bytes, byteorder="big"))[2:]
 
     ulid_bits = epoch_bits + rand_num_bits
     ulid_str = ""
@@ -43,6 +36,19 @@ def generate():
     return ulid_str
 
 
+def encode(bits):
+    if len(bits) != 128:
+        raise ValueError("The argument has to be 128 bits in length")
+    ulid_str = ""
+    for i in range(0, len(bits), 5):
+        ulid_str += CROCKFORDS_BASE32[int(bits[i : i + 5], base=2)]
+    return ulid_str
+
+
 if __name__ == "__main__":
     new_ulid = generate()
     print(new_ulid)
+
+    import random
+
+    print(encode(bin(random.getrandbits(127))[2:]))
