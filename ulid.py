@@ -78,7 +78,7 @@ class ULID:
         return "%s(%r)" % (self.__class__.__name__, str(self))
 
     def __str__(self):
-        ulid_bits = bin(int)[2:]
+        ulid_bits = format(self.int, f"0{_time+_randomness}b")[2:]
         ulid_str = ""
         for i in range(0, len(ulid_bits), 5):
             ulid_str += _crockford_base[int(ulid_bits[i : i + 5], base=2)]
