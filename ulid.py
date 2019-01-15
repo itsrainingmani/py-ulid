@@ -31,25 +31,58 @@ class ULID:
     """
 
     int = 0
-    bytes = bytes_(int)
 
-    def __init__(self, bytes=None, int=None):
+    def __init__(self, int=None):
 
-        if [bytes, int].count(None) != 1:
-            raise TypeError("One of the bytes, int arguments must be given")
+        if [int].count(None) == 1:
+            raise TypeError("The int argument must be given")
 
         if int is not None:
             if not 0 <= int < 1 << 128:
                 raise ValueError("int is out of range (need a 128-bit value")
-            self.int = int
-            self.bytes = self.int.to_bytes(8, byteorder="big")
 
-        if bytes is not None:
-            if len(bytes) != 16:
-                raise ValueError("bytes is not a 16-char string")
-            assert isinstance(bytes, bytes_), repr(bytes)
-            self.int = int_.from_bytes(bytes)
-            self.bytes = bytes
+        self.__dict__["int"] = int
+
+    def __eq__(self, other):
+        if isinstance(other, ULID):
+            return self.int == other.int
+        return NotImplemented
+
+    def __lt__(self, other):
+        if isinstance(other, ULID):
+            return self.int < other.int
+        return NotImplemented
+
+    def __gt__(self, other):
+        if isinstance(other, ULID):
+            return self.int > other.int
+        return NotImplemented
+
+    def __le__(self, other):
+        if isinstance(other, ULID):
+            return self.int <= other.int
+        return NotImplemented
+
+    def __ge__(self, other):
+        if isinstance(other, ULID):
+            return self.int >= other.int
+        return NotImplemented
+
+    def __hash__(self):
+        return hash(self.int)
+
+    def __int__(self):
+        return self.int
+
+    def __repr__(self):
+        return "%s(%r)" % (self.__class__.__name__, str(self))
+
+    def __str__(self):
+        ulid_bits = bin(int)[2:]
+        ulid_str = ""
+        for i in range(0, len(ulid_bits), 5):
+            ulid_str += _crockford_base[int(ulid_bits[i : i + 5], base=2)]
+        return ulid_str
 
 
 # Function to generate the ulid

@@ -8,3 +8,7 @@ class TestUlid(object):
         _ulid = ulid.generate()
         print(_ulid)
         assert len(_ulid) == 26
+
+    def test_ulid_object(self):
+        _ulid = ulid.ULID(32143215987)
+        assert _ulid != ulid.generate()
