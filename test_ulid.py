@@ -1,6 +1,7 @@
 # content of test_ulid.py
 
 import ulid
+import time
 import pytest
 
 
@@ -18,3 +19,9 @@ class TestUlid(object):
     def test_ulid_min(self):
         with pytest.raises(ValueError, match=r".*128-bit.*"):
             ulid.ULID(-1)
+
+    def test_ulid_within_same_ms(self):
+        _ulid = ulid.ULID()
+        val1 = _ulid.generate()
+        # time.sleep(0.01)
+        val2 = _ulid.generate()
