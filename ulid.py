@@ -9,6 +9,7 @@ import os
 import sys
 import time
 import secrets
+from datetime import datetime, timezone
 
 
 __author__ = "Manikandan Sundararajan <tsmanikandan@protonmail.com>"
@@ -33,8 +34,10 @@ class ULID:
     __crockford_base = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
     int = 0
-    curr_time_stamp = 0
-    curr_ulid_bits = '0'
+
+    # prev_utc_time is represented as datetime obj. Default is None
+    prev_utc_time = None
+    curr_ulid_bits = None
 
     def __init__(self, int=None):
 
@@ -66,11 +69,18 @@ class ULID:
 
     # Function to generate the ulid
     def generate(self):
-
-        epoch_bits = format(int(time.time() * 1000), f"0{self.__time}b")
+        #Get current UTC time as a datetime obj
+        curr_utc_time = datetime.now(timezone.utc)
+        if self.prev_utc_time == None:
+            self.prev_utc_time = curr_utc_time
+        else:
+            print("Now: {}, Last: {}".format(curr_utc_time, self.prev_utc_time))
+            ms_diff = (curr_utc_time - self.prev_utc_time).microseconds / 1000
+            print("Millisecond diff: {}".format(ms_diff))
+        
+        curr_utc_timestamp = int(curr_utc_time.timestamp() * 1000)
+        epoch_bits = format(curr_utc_timestamp, f"0{self.__time}b")
         # logging.info(f"EPOCH BITS  {epoch_bits}")S
-
-        rand_num_bits = ""
 
         #Generate the randomness bits using the secrets modules
         rand_num_bits = bin(secrets.randbits(self.__randomness))[2:]
