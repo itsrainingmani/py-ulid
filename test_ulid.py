@@ -44,6 +44,11 @@ class TestUlid(object):
         with pytest.raises(ValueError, match=r".*128-bit.*"):
             ulid.ULID().encode(340282366920938463463374607431768211459)
 
-    def test_ulid_min(self):
+    def test_ulid_encode_min(self):
         with pytest.raises(ValueError, match=r".*128-bit.*"):
             ulid.ULID().encode(-1)
+
+    def test_ulid_decode(self):
+        _ulid = ulid.ULID()
+        s = '7ZZZZZZZZZZZZZZZZZZZZZZZZZ'
+        print(_ulid.decode(s))
