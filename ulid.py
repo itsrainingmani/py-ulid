@@ -9,6 +9,7 @@ import os
 import sys
 import time
 import secrets
+from typing import Any
 from datetime import datetime, timezone
 
 
@@ -67,7 +68,7 @@ class ULID:
         return ulid_str
 
     # Function to generate the ulid
-    def generate(self):
+    def generate(self) -> str:
         #Get current UTC time as a datetime obj
         curr_utc_time = datetime.now(timezone.utc)
         # print("Now: {}, Last: {}".format(curr_utc_time, self.__prev_utc_time))
@@ -104,7 +105,13 @@ class ULID:
             ulid_bits = epoch_bits + rand_num_bits
             return self.__from_bits_to_ulidstr(ulid_bits)
 
-    def __from_bits_to_ulidstr(self, ulid_bits):
+    def encode(self, i: int) -> str:
+        if i < 0 or i >= (1 << 128):
+            raise ValueError("int is out of range (need a 128-bit value")
+        ulid_bits = format(i, f"0{self.__time + self.__randomness}b")
+        return self.__from_bits_to_ulidstr(ulid_bits)
+
+    def __from_bits_to_ulidstr(self, ulid_bits: str) -> str:
         ulid_str = ""
         for i in range(0, len(ulid_bits), 5):
             ulid_str += self.__crockford_base[int(ulid_bits[i : i + 5], base=2)]
