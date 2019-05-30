@@ -6,13 +6,10 @@ import pytest
 
 class TestUlid(object):
     def test_generate_length(self):
-        _ulid = ulid.generate()
-        print(_ulid)
-        assert len(_ulid) == 26
-
-    def test_ulid_object(self):
-        _ulid = ulid.ULID(32143215987)
-        assert _ulid != ulid.generate()
+        _ulid = ulid.ULID()
+        val = _ulid.generate()
+        print(val)
+        assert len(val) == 26
 
     def test_ulid_max(self):
         with pytest.raises(ValueError, match=r".*128-bit.*"):
