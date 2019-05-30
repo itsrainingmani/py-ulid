@@ -9,15 +9,11 @@ import os
 import sys
 import time
 import secrets
-from typing import Any
+from typing import Any, Tuple
 from datetime import datetime, timezone
 
 
 __author__ = "Manikandan Sundararajan <tsmanikandan@protonmail.com>"
-
-int_ = int  # The build-in int type
-bytes_ = bytes  # The built-in bytes type
-
 
 class ULID:
     """Instances of the ULID class represent ULIDS as specified in
@@ -34,34 +30,36 @@ class ULID:
     # 32 Symbol notation
     __crockford_base = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
-    int = 0
+    __int = 0
 
     # prev_utc_time is represented as datetime obj. Default is None
     __prev_utc_time = None
     __prev_rand_bits = None
 
-    def __init__(self, int=None):
+    MAX_EPOCH_TIME = 281474976710655
+
+    def __init__(self, i=None):
 
         self.__prev_utc_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
 
-        if int is not None:
-            if int < 0 or int >= (1 << 128):
+        if i is not None:
+            if i < 0 or i >= (1 << 128):
                 raise ValueError("int is out of range (need a 128-bit value")
-            self.__dict__["int"] = int
+            self.__dict__["__int"] = __int
         else:
-            self.__dict__["int"] = 0
+            self.__dict__["__int"] = 0
 
     def __hash__(self):
-        return hash(self.int)
+        return hash(self.__int)
 
     def __int__(self):
-        return self.int
+        return self.__int
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__.__name__, str(self))
 
     def __str__(self):
-        ulid_bits = format(self.int, f"0{self.__time + self.__randomness}b")
+        ulid_bits = format(self.__int, f"0{self.__time + self.__randomness}b")
         ulid_str = ""
         for i in range(0, len(ulid_bits), 5):
             ulid_str += self.__crockford_base[int(ulid_bits[i : i + 5], base=2)]
@@ -110,6 +108,18 @@ class ULID:
             raise ValueError("int is out of range (need a 128-bit value")
         ulid_bits = format(i, f"0{self.__time + self.__randomness}b")
         return self.__from_bits_to_ulidstr(ulid_bits)
+
+    def decode(self, s: str) -> Tuple[datetime, int]:
+        ulid_bits = ""
+        for c in s:
+            pos = self.__crockford_base.find(c)
+            ulid_bits += format(pos, f"0{5}b")
+        epoch_time = int(ulid_bits[0:self.__time], base=2)
+        if epoch_time > self.MAX_EPOCH_TIME:
+            raise ValueError("The input is larger than the max possible ULID")
+        timestamp_in_seconds = datetime.fromtimestamp(int(epoch_time / 1000))
+        random_component = int(ulid_bits[self.__time:], base=2)
+        return (timestamp_in_seconds, random_component)
 
     def __from_bits_to_ulidstr(self, ulid_bits: str) -> str:
         ulid_str = ""
