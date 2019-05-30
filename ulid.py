@@ -13,13 +13,6 @@ import secrets
 
 __author__ = "Manikandan Sundararajan <tsmanikandan@protonmail.com>"
 
-# Number of bits each ulid component should have
-__time = 50
-__randomness = 80
-
-# 32 Symbol notation
-__crockford_base = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
-
 int_ = int  # The build-in int type
 bytes_ = bytes  # The built-in bytes type
 
@@ -31,6 +24,13 @@ class ULID:
     and have a monotonic sort order (correctly detects and handles the
     same millisecond)
     """
+
+        # Number of bits each ulid component should have
+    __time = 50
+    __randomness = 80
+
+    # 32 Symbol notation
+    __crockford_base = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
     int = 0
     curr_time_stamp = 0
@@ -58,22 +58,22 @@ class ULID:
         return "%s(%r)" % (self.__class__.__name__, str(self))
 
     def __str__(self):
-        ulid_bits = format(self.int, f"0{__time+__randomness}b")[2:]
+        ulid_bits = format(self.int, f"0{self.__time + self.__randomness}b")[2:]
         ulid_str = ""
         for i in range(0, len(ulid_bits), 5):
-            ulid_str += __crockford_base[int(ulid_bits[i : i + 5], base=2)]
+            ulid_str += self.__crockford_base[int(ulid_bits[i : i + 5], base=2)]
         return ulid_str
 
     # Function to generate the ulid
     def generate(self):
 
-        epoch_bits = format(int(time.time() * 1000), f"0{__time}b")
+        epoch_bits = format(int(time.time() * 1000), f"0{self.__time}b")
         # logging.info(f"EPOCH BITS  {epoch_bits}")S
 
         rand_num_bits = ""
 
         #Generate the randomness bits using the secrets modules
-        rand_num_bits = bin(secrets.randbits(__randomness))[2:]
+        rand_num_bits = bin(secrets.randbits(self.__randomness))[2:]
 
         # Get the randomness bits
         # rand_num_bits = bin(int.from_bytes(rand_bytes, byteorder="big"))[2:]
@@ -84,5 +84,5 @@ class ULID:
     def __from_bits_to_ulidstr(self, ulid_bits):
         ulid_str = ""
         for i in range(0, len(ulid_bits), 5):
-            ulid_str += __crockford_base[int(ulid_bits[i : i + 5], base=2)]
+            ulid_str += self.__crockford_base[int(ulid_bits[i : i + 5], base=2)]
         return ulid_str
