@@ -20,8 +20,11 @@ class TestUlid(object):
         with pytest.raises(ValueError, match=r".*128-bit.*"):
             ulid.ULID(-1)
 
-    def test_ulid_within_same_ms(self):
+    def test_lexicographic_sort(self):
         _ulid = ulid.ULID()
-        val1 = _ulid.generate()
-        # time.sleep(0.01)
-        val2 = _ulid.generate()
+        ul_list = []
+        for i in range(100):
+            val = _ulid.generate()
+            ul_list.append(val)
+        sorted_ul = sorted(ul_list)
+        assert sorted_ul == ul_list
