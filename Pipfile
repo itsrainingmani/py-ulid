@@ -9,6 +9,7 @@ name = "pypi"
 [dev-packages]
 black = "==18.9b0"
 pytest = "*"
+rope = "*"
 
 [requires]
 python_version = "3.6"

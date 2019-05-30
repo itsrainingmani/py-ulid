@@ -7,6 +7,7 @@ ulid() to generate ulids according to the specifications
 
 import os
 import sys
+import time
 
 
 __author__ = "Manikandan Sundararajan <tsmanikandan@protonmail.com>"
@@ -31,42 +32,19 @@ class ULID:
     """
 
     int = 0
+    curr_time_stamp = 0
+    curr_rand_bits = '0'
 
     def __init__(self, int=None):
 
-        if [int].count(None) == 1:
-            raise TypeError("The int argument must be given")
+        # if [int].count(None) == 1:
+        #     raise TypeError("The int argument must be given")
 
         if int is not None:
             if not 0 <= int < 1 << 128:
                 raise ValueError("int is out of range (need a 128-bit value")
 
-        self.__dict__["int"] = int
-
-    def __eq__(self, other):
-        if isinstance(other, ULID):
-            return self.int == other.int
-        return NotImplemented
-
-    def __lt__(self, other):
-        if isinstance(other, ULID):
-            return self.int < other.int
-        return NotImplemented
-
-    def __gt__(self, other):
-        if isinstance(other, ULID):
-            return self.int > other.int
-        return NotImplemented
-
-    def __le__(self, other):
-        if isinstance(other, ULID):
-            return self.int <= other.int
-        return NotImplemented
-
-    def __ge__(self, other):
-        if isinstance(other, ULID):
-            return self.int >= other.int
-        return NotImplemented
+            self.__dict__["int"] = int
 
     def __hash__(self):
         return hash(self.int)
@@ -83,6 +61,36 @@ class ULID:
         for i in range(0, len(ulid_bits), 5):
             ulid_str += _crockford_base[int(ulid_bits[i : i + 5], base=2)]
         return ulid_str
+
+    def parse(self, str_to_parse):
+        pass
+
+    # Function to generate the ulid
+    def generate(self):
+
+        epoch_bits = format(int(time.time() * 1000), f"0{_time}b")
+        # logging.info(f"EPOCH BITS  {epoch_bits}")
+
+        rand_num_bits = ""
+        try:
+            rand_bytes = os.urandom(_randomness // 8)
+        except NotImplementedError:
+            raise NotImplementedError(
+                "The /dev/urandom device is not available or readable"
+            )
+
+        # Get the randomness bits
+        rand_num_bits = bin(int.from_bytes(rand_bytes, byteorder="big"))[2:]
+
+        ulid_bits = epoch_bits + rand_num_bits
+        return self.__from_bits_to_ulidstr(ulid_bits)
+
+    def __from_bits_to_ulidstr(ulid_bits):
+        ulid_str = ""
+        for i in range(0, len(ulid_bits), 5):
+            ulid_str += _crockford_base[int(ulid_bits[i : i + 5], base=2)]
+        return ulid_str
+
 
 
 # Function to generate the ulid
