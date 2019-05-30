@@ -36,13 +36,12 @@ class ULID:
     int = 0
 
     # prev_utc_time is represented as datetime obj. Default is None
-    prev_utc_time = None
-    curr_ulid_bits = None
+    __prev_utc_time = None
+    __prev_rand_bits = None
 
     def __init__(self, int=None):
 
-        # if [int].count(None) == 1:
-        #     raise TypeError("The int argument must be given")
+        self.__prev_utc_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
 
         if int is not None:
             if int < 0 or int >= (1 << 128):
@@ -61,7 +60,7 @@ class ULID:
         return "%s(%r)" % (self.__class__.__name__, str(self))
 
     def __str__(self):
-        ulid_bits = format(self.int, f"0{self.__time + self.__randomness}b")[2:]
+        ulid_bits = format(self.int, f"0{self.__time + self.__randomness}b")
         ulid_str = ""
         for i in range(0, len(ulid_bits), 5):
             ulid_str += self.__crockford_base[int(ulid_bits[i : i + 5], base=2)]
@@ -71,25 +70,39 @@ class ULID:
     def generate(self):
         #Get current UTC time as a datetime obj
         curr_utc_time = datetime.now(timezone.utc)
-        if self.prev_utc_time == None:
-            self.prev_utc_time = curr_utc_time
+        # print("Now: {}, Last: {}".format(curr_utc_time, self.__prev_utc_time))
+        ms_diff = (curr_utc_time - self.__prev_utc_time).microseconds / 1000
+        # print("ms diff: {}".format(ms_diff))
+
+        # The generate calls happened in the same millisecond
+        if ms_diff <= 1.0:
+            prev_utc_timestamp = int(self.__prev_utc_time.timestamp() * 1000)
+            epoch_bits = format(prev_utc_timestamp, f"0{self.__time}b")
+
+            if self.__prev_rand_bits == None:
+                rand_num_bits = format(secrets.randbits(self.__randomness), f"0{self.__randomness}b")
+            else:
+                prev_rand_num = int(self.__prev_rand_bits, base=2)
+                if len(bin(prev_rand_num + 1)[2:]) > self.__randomness:
+                    # Random component overflow
+                    raise ValueError("The random component has overflowed")
+                else:
+                    rand_num_bits = format((prev_rand_num + 1), f"0{self.__randomness}b")
+
+            self.__prev_rand_bits = rand_num_bits
+            ulid_bits = epoch_bits + rand_num_bits
+            return self.__from_bits_to_ulidstr(ulid_bits)
         else:
-            print("Now: {}, Last: {}".format(curr_utc_time, self.prev_utc_time))
-            ms_diff = (curr_utc_time - self.prev_utc_time).microseconds / 1000
-            print("Millisecond diff: {}".format(ms_diff))
-        
-        curr_utc_timestamp = int(curr_utc_time.timestamp() * 1000)
-        epoch_bits = format(curr_utc_timestamp, f"0{self.__time}b")
-        # logging.info(f"EPOCH BITS  {epoch_bits}")S
+            # The generate calls happened not within the same millisecond
+            self.__prev_utc_time = curr_utc_time
+            curr_utc_timestamp = int(curr_utc_time.timestamp() * 1000)
+            epoch_bits = format(curr_utc_timestamp, f"0{self.__time}b")
 
-        #Generate the randomness bits using the secrets modules
-        rand_num_bits = bin(secrets.randbits(self.__randomness))[2:]
-
-        # Get the randomness bits
-        # rand_num_bits = bin(int.from_bytes(rand_bytes, byteorder="big"))[2:]
-
-        ulid_bits = epoch_bits + rand_num_bits
-        return self.__from_bits_to_ulidstr(ulid_bits)
+            #Generate the randomness bits using the secrets modules
+            rand_num_bits = format(secrets.randbits(self.__randomness), f"0{self.__randomness}b")
+            self.__prev_rand_bits = rand_num_bits
+            ulid_bits = epoch_bits + rand_num_bits
+            return self.__from_bits_to_ulidstr(ulid_bits)
 
     def __from_bits_to_ulidstr(self, ulid_bits):
         ulid_str = ""
