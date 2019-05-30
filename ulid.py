@@ -80,7 +80,7 @@ class ULID:
             prev_utc_timestamp = int(self.__prev_utc_time.timestamp() * 1000)
             epoch_bits = format(prev_utc_timestamp, f"0{self.__time}b")
 
-            if self.__prev_rand_bits == None:
+            if self.__prev_rand_bits is None:
                 rand_num_bits = format(secrets.randbits(self.__randomness), f"0{self.__randomness}b")
             else:
                 prev_rand_num = int(self.__prev_rand_bits, base=2)
