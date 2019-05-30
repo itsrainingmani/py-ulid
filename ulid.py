@@ -8,6 +8,7 @@ ulid() to generate ulids according to the specifications
 import os
 import sys
 import time
+import secrets
 
 
 __author__ = "Manikandan Sundararajan <tsmanikandan@protonmail.com>"
@@ -33,7 +34,7 @@ class ULID:
 
     int = 0
     curr_time_stamp = 0
-    curr_rand_bits = '0'
+    curr_ulid_bits = '0'
 
     def __init__(self, int=None):
 
@@ -41,10 +42,11 @@ class ULID:
         #     raise TypeError("The int argument must be given")
 
         if int is not None:
-            if not 0 <= int < 1 << 128:
+            if int < 0 or int >= (1 << 128):
                 raise ValueError("int is out of range (need a 128-bit value")
-
             self.__dict__["int"] = int
+        else:
+            self.__dict__["int"] = 0
 
     def __hash__(self):
         return hash(self.int)
@@ -62,9 +64,6 @@ class ULID:
             ulid_str += _crockford_base[int(ulid_bits[i : i + 5], base=2)]
         return ulid_str
 
-    def parse(self, str_to_parse):
-        pass
-
     # Function to generate the ulid
     def generate(self):
 
@@ -72,15 +71,18 @@ class ULID:
         # logging.info(f"EPOCH BITS  {epoch_bits}")
 
         rand_num_bits = ""
-        try:
-            rand_bytes = os.urandom(_randomness // 8)
-        except NotImplementedError:
-            raise NotImplementedError(
-                "The /dev/urandom device is not available or readable"
-            )
+        # try:
+        #     # rand_bytes = os.urandom(_randomness // 8)
+        # except NotImplementedError:
+        #     raise NotImplementedError(
+        #         "The /dev/urandom device is not available or readable"
+        #     )
+
+        #Generate the randomness bits using the secrets modules
+        rand_num_bits = bin(secrets.randbits(_randomness))[2:]
 
         # Get the randomness bits
-        rand_num_bits = bin(int.from_bytes(rand_bytes, byteorder="big"))[2:]
+        # rand_num_bits = bin(int.from_bytes(rand_bytes, byteorder="big"))[2:]
 
         ulid_bits = epoch_bits + rand_num_bits
         return self.__from_bits_to_ulidstr(ulid_bits)
