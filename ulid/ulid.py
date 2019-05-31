@@ -5,7 +5,9 @@ This module provides immutable ULID objects (class ULID) and the functions
 generate() to generate ulids according to the specifications, encode() to transform a 
 given integer to the canonical string representation of an ULID, and decode() to take 
 a canonically encoded string and break it down into it's timestamp and randomness 
-components
+components.
+The module also provides Monotonic sort order guarantee for ULIDs via the Monotonic
+class and it's associated generate() function.
 """
 
 import os
@@ -36,8 +38,6 @@ class ULID:
     MAX_EPOCH_TIME = 281474976710655
 
     def __init__(self, seed=None):
-        self.__prev_utc_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
-        self.__prev_rand_bits = None
         self.seed_time = seed
 
     def __repr__(self):
@@ -53,13 +53,13 @@ class ULID:
         
         rand_num_bits = format(secrets.randbits(self._randomness), f"0{self._randomness}b")
         ulid_bits = epoch_bits + rand_num_bits
-        return self.__from_bits_to_ulidstr(ulid_bits)
+        return self._from_bits_to_ulidstr(ulid_bits)
 
     def encode(self, i: int) -> str:
         if i < 0 or i >= (1 << 128):
             raise ValueError("Input is out of range need a 128-bit value")
         ulid_bits = format(i, f"0{self._time + self._randomness}b")
-        return self.__from_bits_to_ulidstr(ulid_bits)
+        return self._from_bits_to_ulidstr(ulid_bits)
 
     def decode(self, s: str) -> Tuple[int, int]:
         ulid_bits = ""
@@ -74,13 +74,13 @@ class ULID:
         random_component = int(ulid_bits[self._time:], base=2)
         return (epoch_time_in_ms, random_component)
 
-    def __from_bits_to_ulidstr(self, ulid_bits: str) -> str:
+    def _from_bits_to_ulidstr(self, ulid_bits: str) -> str:
         ulid_str = ""
         for i in range(0, len(ulid_bits), 5):
             ulid_str += self.crockford_base[int(ulid_bits[i : i + 5], base=2)]
         return ulid_str
 
-class Monotic(ULID):
+class Monotonic(ULID):
     """The Monotonic class represent an extension of the base ULID 
     class ULIDS with the addition of a monotonic sort order (correctly 
     detects and handles the same millisecond)
@@ -123,7 +123,7 @@ class Monotic(ULID):
 
             self.__prev_rand_bits = rand_num_bits
             ulid_bits = epoch_bits + rand_num_bits
-            return self.__from_bits_to_ulidstr(ulid_bits)
+            return self._from_bits_to_ulidstr(ulid_bits)
         else:
             # The generate calls did not happen in the same millisecond
             self.__prev_utc_time = curr_utc_time
@@ -134,4 +134,4 @@ class Monotic(ULID):
             rand_num_bits = format(secrets.randbits(self._randomness), f"0{self._randomness}b")
             self.__prev_rand_bits = rand_num_bits
             ulid_bits = epoch_bits + rand_num_bits
-            return self.__from_bits_to_ulidstr(ulid_bits)
+            return self._from_bits_to_ulidstr(ulid_bits)
