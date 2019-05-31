@@ -11,8 +11,8 @@ class TestUlid(object):
         val = _ulid.generate()
         assert len(val) == 26
 
-    def test_lexicographic_sort(self):
-        _ulid = ulid.ULID()
+    def test_monotonic_lexicographic_sort(self):
+        _ulid = ulid.Monotonic()
         ul_list = []
         for i in range(100):
             val = _ulid.generate()
