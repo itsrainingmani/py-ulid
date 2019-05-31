@@ -9,7 +9,6 @@ class TestUlid(object):
     def test_generate_length(self):
         _ulid = ulid.ULID()
         val = _ulid.generate()
-        print(val)
         assert len(val) == 26
 
     def test_ulid_max(self):
@@ -48,7 +47,14 @@ class TestUlid(object):
         with pytest.raises(ValueError, match=r".*128-bit.*"):
             ulid.ULID().encode(-1)
 
-    def test_ulid_decode(self):
+    def test_ulid_decode_max(self):
         _ulid = ulid.ULID()
         s = '7ZZZZZZZZZZZZZZZZZZZZZZZZZ'
-        print(_ulid.decode(s))
+        val = _ulid.decode(s)
+        assert val == (281474976710655,1208925819614629174706175)
+
+    def test_ulid_decode_overflow(self):
+        with pytest.raises(ValueError, match=r".*The input is larger than the max possible ULID.*"):
+            _ulid = ulid.ULID()
+            s = '8ZZZZZZZZZZZZZZZZZZZZZZZZZ'
+            val = _ulid.decode(s)
