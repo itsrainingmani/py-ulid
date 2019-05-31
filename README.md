@@ -72,5 +72,5 @@ The proposed ULID spechas the following properties that give it an advantage ove
 
 Partly inspired by:
 
-- [Instagram](http://instagram-engineering.tumblr.com/post/10853187575/sharding-ids-at-instagram)
-- [Firebase](https://firebase.googleblog.com/2015/02/the-2120-ways-to-ensure-unique_68.html)
+* [Instagram](http://instagram-engineering.tumblr.com/post/10853187575/sharding-ids-at-instagram)
+* [Firebase](https://firebase.googleblog.com/2015/02/the-2120-ways-to-ensure-unique_68.html)
