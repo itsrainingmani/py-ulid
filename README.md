@@ -1,4 +1,4 @@
-# py-ulid - A ulid Implementation in Python
+# py-ulid - A ULID Implementation in Python
 
 ![ulid logo](https://raw.githubusercontent.com/tsmanikandan/py-ulid/master/logo.png)
 
@@ -17,7 +17,7 @@ The py-ulid library can be used in any version of python >= 3.5 and does not req
 
 ## How to use
 
-THe py-ulid library can be integrated into any of your existing python programs to provide access to ULIDs.
+THe py-ulid library can be integrated into any of your existing python programs to provide generate, encode and decode ULIDs.
 
 An example of a simple use case is shown below
 
