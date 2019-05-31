@@ -22,12 +22,12 @@ THe py-ulid library can be integrated into any of your existing python programs 
 An example of a simple use case is shown below
 
 ```python
-import ulid as ul
+from ulid import ULID
 
 def main():
 
   # Create an ULID object
-  ulid = ul.ULID()
+  ulid = ULID()
 
   # Generate a ULID
   value = ulid.generate()

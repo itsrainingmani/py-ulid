@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setuptools.setup(
     name="py-ulid",
-    version="1.0-r1",
+    version="1.0.post1",
     description="Python library that provides an implementation of ULID Specification",
     long_description=README,
     long_description_content_type='text/markdown',
@@ -23,7 +23,6 @@ setuptools.setup(
         "Programming Language :: Python :: 3.6",
         "Operating System :: OS Independent",
     ],
-    package_dir={'':'src'},
     packages=setuptools.find_packages(exclude=("tests",)),
     include_package_data=True,
 )
