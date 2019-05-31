@@ -1,6 +1,6 @@
 # content of test_ulid.py
 
-import ulid
+import ulid.ulid as ulid
 import time
 import pytest
 

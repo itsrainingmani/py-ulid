@@ -1,8 +1,11 @@
 r"""ULID objects (universally unique lexicographically sortable identifiers)
 according to the ULID spec [https://github.com/ulid/spec]
 
-This module provides immutable ULID objects (class ULID) and the functions
-ulid() to generate ulids according to the specifications
+This module provides immutable ULID objects (class ULID) and the functions 
+generate() to generate ulids according to the specifications, encode() to transform a 
+given integer to the canonical string representation of an ULID, and decode() to take 
+a canonically encoded string and break it down into it's timestamp and randomness 
+components
 """
 
 import os
