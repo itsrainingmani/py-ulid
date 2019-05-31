@@ -70,14 +70,21 @@ class ULID:
         #Get current UTC time as a datetime obj
         curr_utc_time = datetime.now(timezone.utc)
         # print("Now: {}, Last: {}".format(curr_utc_time, self.__prev_utc_time))
+
+        # Calculate the difference in the current time and the last generated time
+        # using the timedelta microseconds function
         ms_diff = (curr_utc_time - self.__prev_utc_time).microseconds / 1000
         # print("ms diff: {}".format(ms_diff))
 
         # The generate calls happened in the same millisecond
         if ms_diff <= 1.0:
+
+            # Convert the prev time datetime object to a unix timestamp in milliseconds
             prev_utc_timestamp = int(self.__prev_utc_time.timestamp() * 1000)
             epoch_bits = format(prev_utc_timestamp, f"0{self.__time}b")
 
+            # If for some reason the rand_bits for the last generate call were not set,
+            # Set them to be some random bits
             if self.__prev_rand_bits is None:
                 rand_num_bits = format(secrets.randbits(self.__randomness), f"0{self.__randomness}b")
             else:
@@ -92,7 +99,7 @@ class ULID:
             ulid_bits = epoch_bits + rand_num_bits
             return self.__from_bits_to_ulidstr(ulid_bits)
         else:
-            # The generate calls happened not within the same millisecond
+            # The generate calls did not happen in the same millisecond
             self.__prev_utc_time = curr_utc_time
             curr_utc_timestamp = int(curr_utc_time.timestamp() * 1000)
             epoch_bits = format(curr_utc_timestamp, f"0{self.__time}b")
@@ -109,17 +116,18 @@ class ULID:
         ulid_bits = format(i, f"0{self.__time + self.__randomness}b")
         return self.__from_bits_to_ulidstr(ulid_bits)
 
-    def decode(self, s: str) -> Tuple[datetime, int]:
+    def decode(self, s: str) -> Tuple[int, int]:
         ulid_bits = ""
         for c in s:
             pos = self.__crockford_base.find(c)
             ulid_bits += format(pos, f"0{5}b")
-        epoch_time = int(ulid_bits[0:self.__time], base=2)
-        if epoch_time > self.MAX_EPOCH_TIME:
+        epoch_time_in_ms = int(ulid_bits[0:self.__time], base=2)
+
+        if epoch_time_in_ms > self.MAX_EPOCH_TIME:
             raise ValueError("The input is larger than the max possible ULID")
-        timestamp_in_seconds = datetime.fromtimestamp(int(epoch_time / 1000))
+
         random_component = int(ulid_bits[self.__time:], base=2)
-        return (timestamp_in_seconds, random_component)
+        return (epoch_time_in_ms, random_component)
 
     def __from_bits_to_ulidstr(self, ulid_bits: str) -> str:
         ulid_str = ""
