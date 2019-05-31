@@ -30,40 +30,17 @@ class ULID:
     # 32 Symbol notation
     __crockford_base = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
-    __int = 0
-
     # prev_utc_time is represented as datetime obj. Default is None
     __prev_utc_time = None
     __prev_rand_bits = None
 
     MAX_EPOCH_TIME = 281474976710655
 
-    def __init__(self, i=None):
-
+    def __init__(self):
         self.__prev_utc_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
-
-        if i is not None:
-            if i < 0 or i >= (1 << 128):
-                raise ValueError("int is out of range (need a 128-bit value")
-            self.__dict__["__int"] = __int
-        else:
-            self.__dict__["__int"] = 0
-
-    def __hash__(self):
-        return hash(self.__int)
-
-    def __int__(self):
-        return self.__int
 
     def __repr__(self):
         return "%s(%r)" % (self.__class__.__name__, str(self))
-
-    def __str__(self):
-        ulid_bits = format(self.__int, f"0{self.__time + self.__randomness}b")
-        ulid_str = ""
-        for i in range(0, len(ulid_bits), 5):
-            ulid_str += self.__crockford_base[int(ulid_bits[i : i + 5], base=2)]
-        return ulid_str
 
     # Function to generate the ulid
     def generate(self) -> str:
@@ -112,7 +89,7 @@ class ULID:
 
     def encode(self, i: int) -> str:
         if i < 0 or i >= (1 << 128):
-            raise ValueError("int is out of range (need a 128-bit value")
+            raise ValueError("int is out of range need a 128-bit value")
         ulid_bits = format(i, f"0{self.__time + self.__randomness}b")
         return self.__from_bits_to_ulidstr(ulid_bits)
 
@@ -124,7 +101,7 @@ class ULID:
         epoch_time_in_ms = int(ulid_bits[0:self.__time], base=2)
 
         if epoch_time_in_ms > self.MAX_EPOCH_TIME:
-            raise ValueError("The input is larger than the max possible ULID")
+            raise ValueError("Timestamp is larger than the max possible value")
 
         random_component = int(ulid_bits[self.__time:], base=2)
         return (epoch_time_in_ms, random_component)
