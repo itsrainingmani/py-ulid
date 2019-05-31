@@ -1,4 +1,5 @@
 # __init__.py
 
-from .ulid import ULID
-__version__ = '1.0.post1'
+from ulid.ulid import ULID
+
+__version__ = '1.0.1'

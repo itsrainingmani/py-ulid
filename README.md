@@ -10,7 +10,7 @@ For more information, please refer to the [official specification](https://githu
 You can install the py-ulid library from [PyPi](https://pypi.org)
 
 ```shell
-$ pip install py-ulid
+pip install py-ulid
 ```
 
 The py-ulid library can be used in any version of python >= 3.5 and does not require any additional packages or modules.
