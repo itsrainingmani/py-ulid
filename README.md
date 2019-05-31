@@ -1,13 +1,6 @@
 # py-ulid - A ulid Implementation in Python
 
-<h1 align="center">
-    <br>
-    <br>
-    <img width="360" src="logo.png" alt="ulid">
-    <br>
-    <br>
-    <br>
-</h1>
+![ulid logo](https://raw.githubusercontent.com/tsmanikandan/py-ulid/master/logo.png)
 
 The py-ulid library is a minimal and self-contained implementation of the ULID (Universally Unique Lexicographically Sortable Identifier) specification in Python.
 For more information, please refer to the [official specification](https://github.com/ulid/spec).
@@ -29,7 +22,6 @@ THe py-ulid library can be integrated into any of your existing python programs 
 An example of a simple use case is shown below
 
 ```python
-
 from ulid import ULID
 
 def main():
@@ -44,7 +36,6 @@ def main():
 
 if __name__ == '__main__':
   main()
-
 ```
 
 Running that sample program would yield an output as follows
