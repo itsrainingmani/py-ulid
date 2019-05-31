@@ -55,8 +55,44 @@ class ULID:
         ulid_bits = epoch_bits + rand_num_bits
         return self.__from_bits_to_ulidstr(ulid_bits)
 
+    def encode(self, i: int) -> str:
+        if i < 0 or i >= (1 << 128):
+            raise ValueError("Input is out of range need a 128-bit value")
+        ulid_bits = format(i, f"0{self._time + self._randomness}b")
+        return self.__from_bits_to_ulidstr(ulid_bits)
+
+    def decode(self, s: str) -> Tuple[int, int]:
+        ulid_bits = ""
+        for c in s:
+            pos = self.crockford_base.find(c)
+            ulid_bits += format(pos, f"0{5}b")
+        epoch_time_in_ms = int(ulid_bits[0:self._time], base=2)
+
+        if epoch_time_in_ms > self.MAX_EPOCH_TIME:
+            raise ValueError("Timestamp is larger than the max possible value")
+
+        random_component = int(ulid_bits[self._time:], base=2)
+        return (epoch_time_in_ms, random_component)
+
+    def __from_bits_to_ulidstr(self, ulid_bits: str) -> str:
+        ulid_str = ""
+        for i in range(0, len(ulid_bits), 5):
+            ulid_str += self.crockford_base[int(ulid_bits[i : i + 5], base=2)]
+        return ulid_str
+
+class Monotic(ULID):
+    """The Monotonic class represent an extension of the base ULID 
+    class ULIDS with the addition of a monotonic sort order (correctly 
+    detects and handles the same millisecond)
+    """
+
+    def __init__(self, seed=None):
+        self.__prev_utc_time = datetime(1970, 1, 1, tzinfo=timezone.utc)
+        self.__prev_rand_bits = None
+        self.seed_time = seed
+
     # Function to generate the ulid monotonically
-    def generateMonotonic(self) -> str:
+    def generate(self) -> str:
         #Get current UTC time as a datetime obj
         curr_utc_time = datetime.now(timezone.utc)
         # print("Now: {}, Last: {}".format(curr_utc_time, self.__prev_utc_time))
@@ -99,28 +135,3 @@ class ULID:
             self.__prev_rand_bits = rand_num_bits
             ulid_bits = epoch_bits + rand_num_bits
             return self.__from_bits_to_ulidstr(ulid_bits)
-
-    def encode(self, i: int) -> str:
-        if i < 0 or i >= (1 << 128):
-            raise ValueError("Input is out of range need a 128-bit value")
-        ulid_bits = format(i, f"0{self._time + self._randomness}b")
-        return self.__from_bits_to_ulidstr(ulid_bits)
-
-    def decode(self, s: str) -> Tuple[int, int]:
-        ulid_bits = ""
-        for c in s:
-            pos = self.crockford_base.find(c)
-            ulid_bits += format(pos, f"0{5}b")
-        epoch_time_in_ms = int(ulid_bits[0:self._time], base=2)
-
-        if epoch_time_in_ms > self.MAX_EPOCH_TIME:
-            raise ValueError("Timestamp is larger than the max possible value")
-
-        random_component = int(ulid_bits[self._time:], base=2)
-        return (epoch_time_in_ms, random_component)
-
-    def __from_bits_to_ulidstr(self, ulid_bits: str) -> str:
-        ulid_str = ""
-        for i in range(0, len(ulid_bits), 5):
-            ulid_str += self.crockford_base[int(ulid_bits[i : i + 5], base=2)]
-        return ulid_str
