@@ -10,12 +10,12 @@ README = (HERE / "README.md").read_text()
 setuptools.setup(
     name="py-ulid",
     version="1.0.0",
+    description="Python library that provides an implementation of ULID Specification",
+    long_description=README,
+    long_description_content_type='text/markdown',
     author="Manikandan Sundararajan",
     author_email="me@tsmanikandan.com",
     license="MIT",
-    description="Python library that provides an implementation of the Universally Unique Lexicographically Sortable Id spec",
-    long_description=README,
-    long_description_content_type="text/markdown",
     url="https://github.com/tsmanikandan/py-ulid",
     classifiers=[
         "License :: OSI Approved :: MIT License",
