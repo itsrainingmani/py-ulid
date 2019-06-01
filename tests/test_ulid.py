@@ -3,6 +3,7 @@
 import ulid.ulid as ulid
 import time
 import pytest
+from datetime import datetime, timezone
 
 
 class TestUlid(object):
@@ -28,8 +29,10 @@ class TestUlid(object):
 
     def test_encode_return_val_length(self):
         _ulid= ulid.ULID()
-        i = 3402823669209384634633
-        assert len(_ulid.encode(i)) == 26
+        i = 340282366920938463463374607431768167
+        val = _ulid.encode(i)
+        # print(val)
+        assert len(val) == 26
 
     def test_ulid_encode_max(self):
         with pytest.raises(ValueError, match=r".*larger than 128.*"):
@@ -39,11 +42,30 @@ class TestUlid(object):
         with pytest.raises(ValueError, match=r".*has to be a positive.*"):
             ulid.ULID().encode(-1)
 
+    def test_ulid_encode_timestamp(self):
+        _ulid= ulid.ULID()
+        t = int(datetime.now(timezone.utc).timestamp() * 1000)
+        val = _ulid.encode_timestamp(t)
+        # print(val)
+        assert len(val) == 10
+
+    def test_ulid_encode_timestamp_max(self):
+        _ulid= ulid.ULID()
+        t = 281474976710655
+        val = _ulid.encode_timestamp(t)
+        assert val == '7ZZZZZZZZZ'
+
     def test_ulid_decode_max(self):
         _ulid = ulid.ULID()
         s = '7ZZZZZZZZZZZZZZZZZZZZZZZZZ'
         val = _ulid.decode(s)
         assert val == (281474976710655,1208925819614629174706175)
+
+    def test_ulid_decode(self):
+        _ulid = ulid.ULID()
+        s = '01BX5ZZKBKACTAV9WEVGEMMVRY'
+        val = _ulid.decode(s)
+        assert val == (1508808576371, 392928161897179156999966)
 
     def test_ulid_decode_overflow(self):
         with pytest.raises(ValueError, match=r".*Cannot encode time larger than.*"):
