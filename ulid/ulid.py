@@ -23,9 +23,8 @@ __author__ = "Manikandan Sundararajan <tsmanikandan@protonmail.com>"
 class ULID:
     """Instances of the ULID class represent ULIDS as specified in
     [https://github.com/ulid/spec]. ULIDS have 128-bit compatibility
-    with UUID, Lexicographically sortable, case insensitive, URL safe
-    and have a monotonic sort order (correctly detects and handles the
-    same millisecond)
+    with UUID, are Lexicographically sortable, case insensitive and 
+    URL safe
     """
 
         # Number of bits each ulid component should have
@@ -35,6 +34,7 @@ class ULID:
     # 32 Symbol notation
     crockford_base = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
 
+    # 2^48 - 1. Upto the year 10889 A.D
     MAX_EPOCH_TIME = 281474976710655
 
     def __init__(self, seed=None):
@@ -45,6 +45,12 @@ class ULID:
 
     # Function to generate the ulid without monotonicity or ms time handling
     def generate(self) -> str:
+        """
+        Generate a ULID encoded in Crockford's Base32
+
+        >>> ulid.generate()
+        01BX5ZZKBKACTAV9WEVGEMMVRZ
+        """
         if self.seed_time is None:
             curr_utc_timestamp = int(datetime.now(timezone.utc).timestamp() * 1000)
         else:
@@ -55,8 +61,14 @@ class ULID:
 
         return self._from_bits_to_ulidstr(epoch_bits + rand_num_bits)
 
-    # Function to encode an int timestamp into the ulid timestamp portion
+    # Function to encode an integer into a ulid canonical string
     def encode(self, i: int) -> str:
+        """
+        Convert a given integer into the canonical ULID string format
+
+        >>> ulid.encode(340282366920938463463374607431768167)
+        00864KEJY6MZQSVCHD1SB08637
+        """
         if not isinstance(i, int):
             raise TypeError("The input has to be an integer")
         if i < 0:
@@ -69,6 +81,12 @@ class ULID:
 
     # Function to encode a unix timestamp into ulid canonical string format
     def encode_timestamp(self, t: int) -> str:
+        """
+        Convert a given unix timestamp into the canonical ULID string format
+
+        >>> ulid.encode(281474976710655)
+        7ZZZZZZZZZ
+        """
         if not isinstance(t, int):
             raise TypeError("The timestamp has to be an integer")
         if t < 0:
@@ -76,9 +94,22 @@ class ULID:
         if t > self.MAX_EPOCH_TIME:
             raise ValueError("Cannot encode time larger than - {}".format(self.MAX_EPOCH_TIME))
 
-        return format(t, f"0{self._time}b")
+        return self._from_bits_to_ulidstr(format(t, f"0{self._time}b"))
 
     def decode(self, s: str) -> Tuple[int, int]:
+        """
+        Given a properly formed ULID, return a tuple containing the 
+        timestamp and the randomness component as ints
+
+        >>> ulid.decode('01BX5ZZKBKACTAV9WEVGEMMVRY')
+        (1508808576371, 392928161897179156999966)
+
+        Returns
+        -------
+        Tuple[int, int]
+            The first value in the tuple is the time component
+            The second value in the tuple is the random component
+        """
         if not isinstance(s, str):
             raise TypeError("The input value has to be a string")
         if len(s) > 26:
