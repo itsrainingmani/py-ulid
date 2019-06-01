@@ -47,29 +47,53 @@ class ULID:
     def generate(self) -> str:
         if self.seed_time is None:
             curr_utc_timestamp = int(datetime.now(timezone.utc).timestamp() * 1000)
-            epoch_bits = format(curr_utc_timestamp, f"0{self._time}b")
         else:
-            epoch_bits = format(self.seed_time*1000, f"0{self._time}b")
-        
-        rand_num_bits = format(secrets.randbits(self._randomness), f"0{self._randomness}b")
-        ulid_bits = epoch_bits + rand_num_bits
-        return self._from_bits_to_ulidstr(ulid_bits)
+            curr_utc_timestamp = self.seed_time * 1000
 
+        epoch_bits = format(curr_utc_timestamp, f"0{self._time}b")
+        rand_num_bits = format(secrets.randbits(self._randomness), f"0{self._randomness}b")
+
+        return self._from_bits_to_ulidstr(epoch_bits + rand_num_bits)
+
+    # Function to encode an int timestamp into the ulid timestamp portion
     def encode(self, i: int) -> str:
-        if i < 0 or i >= (1 << 128):
-            raise ValueError("Input is out of range need a 128-bit value")
+        if not isinstance(t, int):
+            raise TypeError("The input has to be an integer")
+        if i < 0:
+            raise ValueError("The input has to be a positive value")
+        if i >= (1 << 128):
+            raise ValueError("The input value is larger than 128 bits")
+
         ulid_bits = format(i, f"0{self._time + self._randomness}b")
         return self._from_bits_to_ulidstr(ulid_bits)
 
+    # Function to encode a unix timestamp into ulid canonical string format
+    def encode_timestamp(self, t: int) -> str:
+        if not isinstance(t, int):
+            raise TypeError("The timestamp has to be an integer")
+        if t < 0:
+            raise ValueError("The timestamp has to be a positive value")
+        if t > self.MAX_EPOCH_TIME:
+            raise ValueError("Cannot encode time larger than - {}".format(self.MAX_EPOCH_TIME))
+
+        return format(t, f"0{self._time}b")
+
     def decode(self, s: str) -> Tuple[int, int]:
+        if not isinstance(s, str):
+            raise TypeError("The input value has to be a string")
+        if len(s) > 26:
+            raise ValueError("The string has to be 26 characters in length")
+
         ulid_bits = ""
         for c in s:
             pos = self.crockford_base.find(c)
+            if pos == -1:
+                raise ValueError("Invalid character: {} found in ulid string".format(c))
             ulid_bits += format(pos, f"0{5}b")
         epoch_time_in_ms = int(ulid_bits[0:self._time], base=2)
 
         if epoch_time_in_ms > self.MAX_EPOCH_TIME:
-            raise ValueError("Timestamp is larger than the max possible value")
+            raise ValueError("Cannot encode time larger than - {}".format(self.MAX_EPOCH_TIME))
 
         random_component = int(ulid_bits[self._time:], base=2)
         return (epoch_time_in_ms, random_component)
@@ -79,6 +103,11 @@ class ULID:
         for i in range(0, len(ulid_bits), 5):
             ulid_str += self.crockford_base[int(ulid_bits[i : i + 5], base=2)]
         return ulid_str
+
+    # Function to print a given ULID as a binary octet
+    def pretty_print(self):
+        pass
+
 
 class Monotonic(ULID):
     """The Monotonic class represent an extension of the base ULID 
