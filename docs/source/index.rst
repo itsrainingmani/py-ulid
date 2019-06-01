@@ -4,15 +4,19 @@
    contain the root `toctree` directive.
 
 Welcome to py-ulid's documentation!
-===================================
+***********************************
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+README
+==================
+.. include:: ../../README.md
+
 ulid module
 ==================
-.. automodule:: ulid
+.. automodule:: ulid.ulid
     :members:
 
 ULID class
@@ -24,7 +28,7 @@ Monotonic class
 ==================
 .. autoclass:: ulid.Monotonic
     :members:
-
+    :inherited-members:
 
 Indices and tables
 ==================
