@@ -15,8 +15,9 @@ class TestUlid(object):
     def test_monotonic_lexicographic_sort(self):
         _ulid = ulid.Monotonic()
         ul_list = []
-        for i in range(100):
+        for i in range(10):
             val = _ulid.generate()
+            print(val)
             ul_list.append(val)
         sorted_ul = sorted(ul_list)
         assert sorted_ul == ul_list
