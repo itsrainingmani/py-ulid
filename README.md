@@ -7,7 +7,7 @@ For more information, please refer to the [official specification](https://githu
 
 ## Installation
 
-You can install the py-ulid library from [PyPi](https://pypi.org)
+You can install the py-ulid library from [PyPi](https://pypi.org/project/py-ulid)
 
 ```shell
 pip install py-ulid
