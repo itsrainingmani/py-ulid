@@ -50,6 +50,11 @@ class ULID:
 
         >>> ulid.generate()
         01BX5ZZKBKACTAV9WEVGEMMVRZ
+
+        Returns
+        -------
+        str
+            Canonically encoded ULID string
         """
         if self.seed_time is None:
             curr_utc_timestamp = int(datetime.now(timezone.utc).timestamp() * 1000)
@@ -68,6 +73,11 @@ class ULID:
 
         >>> ulid.encode(340282366920938463463374607431768167)
         00864KEJY6MZQSVCHD1SB08637
+
+        Returns
+        -------
+        str
+            Canonically encoded ULID string
         """
         if not isinstance(i, int):
             raise TypeError("The input has to be an integer")
@@ -86,6 +96,11 @@ class ULID:
 
         >>> ulid.encode(281474976710655)
         7ZZZZZZZZZ
+
+        Returns
+        -------
+        str
+            Canonically encoded ULID string
         """
         if not isinstance(t, int):
             raise TypeError("The timestamp has to be an integer")
@@ -193,6 +208,11 @@ class Monotonic(ULID):
 
         >>> ulid.generate()
         01BX5ZZKBKACTAV9WEVGEMMVRZ
+
+        Returns
+        -------
+        str
+            Canonically encoded ULID string
         """
         #Get current UTC time as a datetime obj
         curr_utc_time = datetime.now(timezone.utc)
