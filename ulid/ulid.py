@@ -1,8 +1,8 @@
 """
 This module provides immutable ULID objects (class ULID) according to the 
-`ULID spec <https://github.com/ulid/spec>`_ and the functions generate() 
-to generate ulids according to the specifications, encode() to transform a 
-given integer to the canonical string representation of an ULID, and decode() to take 
+`ULID spec <https://github.com/ulid/spec>`_ and the functions *generate()* 
+to generate ulids according to the specifications, *encode()* to transform a 
+given integer to the canonical string representation of an ULID, and *decode()* to take 
 a canonically encoded string and break it down into it's timestamp and randomness components.
 The module also provides Monotonic sort order guarantee for ULIDs via the Monotonic
 class and it's associated generate() function.
