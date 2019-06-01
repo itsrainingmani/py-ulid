@@ -2,6 +2,8 @@
 
 ![ulid logo](https://raw.githubusercontent.com/tsmanikandan/py-ulid/master/logo.png)
 
+[![Documentation Status](https://readthedocs.org/projects/py-ulid/badge/?version=latest)](https://py-ulid.readthedocs.io/en/latest/?badge=latest)
+
 The py-ulid library is a minimal and self-contained implementation of the ULID (Universally Unique Lexicographically Sortable Identifier) specification in Python.
 For more information, please refer to the [official specification](https://github.com/ulid/spec).
 
