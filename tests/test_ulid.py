@@ -31,7 +31,7 @@ class TestUlid(object):
         _ulid= ulid.ULID()
         i = 340282366920938463463374607431768167
         val = _ulid.encode(i)
-        # print(val)
+        print(val)
         assert len(val) == 26
 
     def test_ulid_encode_max(self):
@@ -46,7 +46,7 @@ class TestUlid(object):
         _ulid= ulid.ULID()
         t = int(datetime.now(timezone.utc).timestamp() * 1000)
         val = _ulid.encode_timestamp(t)
-        # print(val)
+        print(val)
         assert len(val) == 10
 
     def test_ulid_encode_timestamp_max(self):
