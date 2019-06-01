@@ -85,6 +85,8 @@ class ULID:
             raise ValueError("The string has to be 26 characters in length")
 
         ulid_bits = ""
+        # Loop through the given string and find the position of the character
+        # in crockfords base. Convert that position to a 5 bit string
         for c in s:
             pos = self.crockford_base.find(c)
             if pos == -1:
@@ -110,20 +112,16 @@ class ULID:
 
         # interval = "".join(list(map(lambda a: '*' if a % 2 == 0 else '+', [for i in range(65)])))
         interval = "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
-
         (timestamp, rand) = self.decode(s)
 
         time_bits = format(timestamp, f"0{48}b")
         rand_bits = format(rand, f"0{self._randomness}b")
 
-        time_high = time_bits[:32]
-        time_low = time_bits[32:]
-
         print("\n")
         print(interval)
-        print("|" + " "*16 + time_high + " "*15 + "|")
+        print("|" + " "*16 + time_bits[:32] + " "*15 + "|")
         print(interval)
-        print("|" + " "*8 + time_low + " "*7 + "|" + " "*8 + rand_bits[0:16] + " "*7 + "|")
+        print("|" + " "*8 + time_bits[32:] + " "*7 + "|" + " "*8 + rand_bits[0:16] + " "*7 + "|")
         print(interval)
         print("|" + " "*16 + rand_bits[16:48]+ " "*15 + "|")
         print(interval)
