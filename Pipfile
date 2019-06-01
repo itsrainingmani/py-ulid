@@ -5,12 +5,13 @@ name = "pypi"
 
 [packages]
 
-
 [dev-packages]
 black = "==18.9b0"
 pytest = "*"
 rope = "*"
 twine = "*"
+sphinx = "*"
+sphinx-rtd-theme = "*"
 
 [requires]
 python_version = "3.6"
