@@ -48,13 +48,13 @@ class ULID:
         """
         Generate a 26 character ULID string encoded in Crockford's Base32
 
+        :returns: Canonically encoded ULID string
+        :rtype: str
+
+        >>> from ulid import ULID
+        >>> ulid = ULID()
         >>> ulid.generate()
         01BX5ZZKBKACTAV9WEVGEMMVRZ
-
-        Returns
-        -------
-        str
-            Canonically encoded ULID string
         """
         if self.seed_time is None:
             curr_utc_timestamp = int(datetime.now(timezone.utc).timestamp() * 1000)
@@ -71,13 +71,16 @@ class ULID:
         """
         Convert a given integer into the canonical ULID string format
 
+        :param i: The integer to convert
+        :type i: int
+        :returns: Canonically encoded ULID string
+        :rtype: str
+        :raises: TypeError, ValueError
+
+        >>> from ulid import ULID
+        >>> ulid = ULID()
         >>> ulid.encode(340282366920938463463374607431768167)
         00864KEJY6MZQSVCHD1SB08637
-
-        Returns
-        -------
-        str
-            Canonically encoded ULID string
         """
         if not isinstance(i, int):
             raise TypeError("The input has to be an integer")
@@ -94,13 +97,16 @@ class ULID:
         """
         Convert a given unix timestamp into the canonical ULID string format
 
+        :param t: The unix timestamp to convert
+        :type t: int
+        :returns: Canonically encoded ULID string
+        :rtype: str
+        :raises: TypeError, ValueError
+
+        >>> from ulid import ULID
+        >>> ulid = ULID()
         >>> ulid.encode(281474976710655)
         7ZZZZZZZZZ
-
-        Returns
-        -------
-        str
-            Canonically encoded ULID string
         """
         if not isinstance(t, int):
             raise TypeError("The timestamp has to be an integer")
@@ -116,14 +122,16 @@ class ULID:
         Given a properly formed ULID, return a tuple containing the 
         timestamp and the randomness component as ints
 
+        :param s: ULID string to decode
+        :type s: str
+        :returns: (timestamp, randomness)
+        :rtype: tuple(int, int)
+        :raises: TypeError, ValueError
+
+        >>> from ulid import ULID
+        >>> ulid = ULID()
         >>> ulid.decode('01BX5ZZKBKACTAV9WEVGEMMVRY')
         (1508808576371, 392928161897179156999966)
-
-        Returns
-        -------
-        (int, int)
-            The first value in the tuple is the time component
-            The second value in the tuple is the random component
         """
         if not isinstance(s, str):
             raise TypeError("The input value has to be a string")
@@ -157,8 +165,9 @@ class ULID:
         """
         Print the given ULID string in a binary layout
 
+        >>> from ulid import ULID
+        >>> ulid = ULID()
         >>> ulid.pretty_print(ulid_str)
-
         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
         |                      32_bit_uint_time_high                    |
         +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
@@ -204,15 +213,16 @@ class Monotonic(ULID):
     # Function to generate the ulid monotonically
     def generate(self) -> str:
         """
-        Generate a 26 character ULID string encoded in Crockford's Base32.
+        Generate a 26 character ULID string encoded in Crockford's Base32
 
+        :returns: Canonically encoded ULID string
+        :rtype: str
+        :raises: ValueError
+
+        >>> from ulid import Monotonic
+        >>> ulid = Monotonic()
         >>> ulid.generate()
         01BX5ZZKBKACTAV9WEVGEMMVRZ
-
-        Returns
-        -------
-        str
-            Canonically encoded ULID string
         """
         #Get current UTC time as a datetime obj
         curr_utc_time = datetime.now(timezone.utc)
