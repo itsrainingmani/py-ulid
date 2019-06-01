@@ -1,22 +1,26 @@
 ulid package
 ============
 
-Submodules
-----------
-
-ulid.ulid module
+ulid module
 ----------------
 
 .. automodule:: ulid.ulid
     :members:
     :undoc-members:
     :show-inheritance:
+    :inherited-members:
 
 
 Module contents
 ---------------
 
-.. automodule:: ulid
+ULID class
+~~~~~~~~~~
+.. autoclass:: ulid.ULID
     :members:
-    :undoc-members:
-    :show-inheritance:
+
+Monotonic class
+~~~~~~~~~~~~~~~
+.. autoclass:: ulid.Monotonic
+    :members:
+    :inherited-members:

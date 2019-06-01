@@ -32,7 +32,7 @@ release = '1.0.2'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.viewcode', 'sphinx.ext.autodoc'
+    'sphinx.ext.viewcode', 'sphinx.ext.autodoc', 'recommonmark'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
