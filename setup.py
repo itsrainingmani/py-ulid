@@ -9,7 +9,7 @@ README = (HERE / "README.md").read_text()
 
 setuptools.setup(
     name="py-ulid",
-    version="1.0.1",
+    version="1.0.2",
     description="Python library that provides an implementation of the ULID Specification",
     long_description=README,
     long_description_content_type='text/markdown',
