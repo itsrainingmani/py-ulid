@@ -46,7 +46,7 @@ class ULID:
     # Function to generate the ulid without monotonicity or ms time handling
     def generate(self) -> str:
         """
-        Generate a ULID encoded in Crockford's Base32
+        Generate a 26 character ULID string encoded in Crockford's Base32
 
         >>> ulid.generate()
         01BX5ZZKBKACTAV9WEVGEMMVRZ
@@ -106,7 +106,7 @@ class ULID:
 
         Returns
         -------
-        Tuple[int, int]
+        (int, int)
             The first value in the tuple is the time component
             The second value in the tuple is the random component
         """
@@ -139,6 +139,21 @@ class ULID:
 
     # Function to print a given ULID as in the binary layout
     def pretty_print(self, s: str) -> None:
+        """
+        Print the given ULID string in a binary layout
+
+        >>> ulid.pretty_print(ulid_str)
+
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        |                      32_bit_uint_time_high                    |
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        |     16_bit_uint_time_low      |       16_bit_uint_random      |
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        |                       32_bit_uint_random                      |
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        |                       32_bit_uint_random                      |
+        +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        """
         # (timestamp, rand) = tuple(map(lambda x: bin(x)[2:], self.decode(s)))
 
         # interval = "".join(list(map(lambda a: '*' if a % 2 == 0 else '+', [for i in range(65)])))
@@ -173,6 +188,12 @@ class Monotonic(ULID):
 
     # Function to generate the ulid monotonically
     def generate(self) -> str:
+        """
+        Generate a 26 character ULID string encoded in Crockford's Base32.
+
+        >>> ulid.generate()
+        01BX5ZZKBKACTAV9WEVGEMMVRZ
+        """
         #Get current UTC time as a datetime obj
         curr_utc_time = datetime.now(timezone.utc)
         # print("Now: {}, Last: {}".format(curr_utc_time, self.__prev_utc_time))
