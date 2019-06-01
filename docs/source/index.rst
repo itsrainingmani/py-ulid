@@ -11,25 +11,11 @@ Welcome to py-ulid's documentation!
    :caption: Contents:
 
    readme
+   ulid
 
 README
 ==================
 .. include:: readme.rst
-
-ulid module
-==================
-.. automodule:: ulid.ulid
-
-ULID class
-==================
-.. autoclass:: ulid.ULID
-    :members:
-
-Monotonic class
-==================
-.. autoclass:: ulid.Monotonic
-    :members:
-    :inherited-members:
 
 Indices and tables
 ==================
