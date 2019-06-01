@@ -12,6 +12,7 @@ Welcome to py-ulid's documentation!
 
    readme
    ulid
+   inspiration
 
 README
 ==================
