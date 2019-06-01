@@ -57,7 +57,7 @@ class ULID:
 
     # Function to encode an int timestamp into the ulid timestamp portion
     def encode(self, i: int) -> str:
-        if not isinstance(t, int):
+        if not isinstance(i, int):
             raise TypeError("The input has to be an integer")
         if i < 0:
             raise ValueError("The input has to be a positive value")
@@ -104,9 +104,31 @@ class ULID:
             ulid_str += self.crockford_base[int(ulid_bits[i : i + 5], base=2)]
         return ulid_str
 
-    # Function to print a given ULID as a binary octet
-    def pretty_print(self):
-        pass
+    # Function to print a given ULID as in the binary layout
+    def pretty_print(self, s: str) -> None:
+        # (timestamp, rand) = tuple(map(lambda x: bin(x)[2:], self.decode(s)))
+
+        # interval = "".join(list(map(lambda a: '*' if a % 2 == 0 else '+', [for i in range(65)])))
+        interval = "+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+"
+
+        (timestamp, rand) = self.decode(s)
+
+        time_bits = format(timestamp, f"0{48}b")
+        rand_bits = format(rand, f"0{self._randomness}b")
+
+        time_high = time_bits[:32]
+        time_low = time_bits[32:]
+
+        print("\n")
+        print(interval)
+        print("|" + " "*16 + time_high + " "*15 + "|")
+        print(interval)
+        print("|" + " "*8 + time_low + " "*7 + "|" + " "*8 + rand_bits[0:16] + " "*7 + "|")
+        print(interval)
+        print("|" + " "*16 + rand_bits[16:48]+ " "*15 + "|")
+        print(interval)
+        print("|" + " "*16 + rand_bits[48:] + " "*15 + "|")
+        print(interval)
 
 
 class Monotonic(ULID):
