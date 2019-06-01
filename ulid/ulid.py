@@ -1,13 +1,16 @@
-r"""ULID objects (universally unique lexicographically sortable identifiers)
-according to the ULID spec [https://github.com/ulid/spec]
-
-This module provides immutable ULID objects (class ULID) and the functions 
-generate() to generate ulids according to the specifications, encode() to transform a 
+"""
+This module provides immutable ULID objects (class ULID) according to the 
+`ULID spec <https://github.com/ulid/spec>`_ and the functions generate() 
+to generate ulids according to the specifications, encode() to transform a 
 given integer to the canonical string representation of an ULID, and decode() to take 
-a canonically encoded string and break it down into it's timestamp and randomness 
-components.
+a canonically encoded string and break it down into it's timestamp and randomness components.
 The module also provides Monotonic sort order guarantee for ULIDs via the Monotonic
 class and it's associated generate() function.
+
+.. module:: ulid
+    :platform: Unix, Windows
+.. moduleauthor:: Manikandan Sundararajan <tsmanikandan@protonmail.com>
+
 """
 
 import os
@@ -21,8 +24,8 @@ from datetime import datetime, timezone
 __author__ = "Manikandan Sundararajan <tsmanikandan@protonmail.com>"
 
 class ULID:
-    """Instances of the ULID class represent ULIDS as specified in
-    [https://github.com/ulid/spec]. ULIDS have 128-bit compatibility
+    """Instances of the ULID class represent ULIDS as specified in the 
+    `ULID spec <https://github.com/ulid/spec>`_. ULIDS have 128-bit compatibility
     with UUID, are Lexicographically sortable, case insensitive and 
     URL safe
     """
@@ -201,7 +204,7 @@ class ULID:
 
 class Monotonic(ULID):
     """The Monotonic class represent an extension of the base ULID 
-    class ULIDS with the addition of a monotonic sort order (correctly 
+    class with the addition of a monotonic sort order (correctly 
     detects and handles the same millisecond)
     """
 
