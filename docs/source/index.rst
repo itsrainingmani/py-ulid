@@ -10,14 +10,15 @@ Welcome to py-ulid's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+   readme
+
 README
 ==================
-.. include:: ../../README.md
+.. include:: readme.rst
 
 ulid module
 ==================
 .. automodule:: ulid.ulid
-    :members:
 
 ULID class
 ==================
