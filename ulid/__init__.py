@@ -3,4 +3,4 @@
 from ulid.ulid import ULID
 from ulid.ulid import Monotonic
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
