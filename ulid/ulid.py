@@ -43,9 +43,6 @@ class ULID:
     def __init__(self, seed=None):
         self.seed_time = seed
 
-    def __repr__(self):
-        return "%s(%r)" % (self.__class__.__name__, str(self))
-
     # Function to generate the ulid without monotonicity or ms time handling
     def generate(self) -> str:
         """
