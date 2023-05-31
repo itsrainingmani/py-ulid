@@ -9,14 +9,14 @@ README = (HERE / "README.md").read_text()
 
 setuptools.setup(
     name="py-ulid",
-    version="1.0.3",
+    version="1.0.4",
     description="Python library that provides an implementation of the ULID Specification",
     long_description=README,
     long_description_content_type='text/markdown',
     author="Manikandan Sundararajan",
-    author_email="me@tsmanikandan.com",
+    author_email="mani@hey.com",
     license="MIT",
-    url="https://github.com/tsmanikandan/py-ulid",
+    url="https://github.com/itsrainingmani/py-ulid",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3",
